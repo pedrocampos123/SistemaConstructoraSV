@@ -1,38 +1,30 @@
 package com.vistas;
 
-import com.teamdev.jxmaps.MapMouseEvent;
-import com.teamdev.jxmaps.MouseEvent;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 import com.controller.ProyectoJpaController;
+import com.controller.UbicacionJpaController;
 import com.entities.Proyecto;
 import com.entities.Ubicacion;
-import com.utilidades.CreacionMapa;
 import com.utilidades.Mensajeria;
 
 /**
  * Nombre de la clase: FrmProyecto 
  * Fecha: 01/11/2020 
- * Derechos: Última
- * modificación:02/11/2020
- * Version: 1.0
- * @author luis-
+ * CopyRight: Pedro Campos
+ * modificación:05/11/2020
+ * Version: 1.1
+ * @author pedro
  */
 public class FrmProyecto extends javax.swing.JInternalFrame {
 
-    JFrame frame = new JFrame("Mapa");
-    Ubicacion ubi = new Ubicacion();
     Mensajeria message = new Mensajeria();
         
     ProyectoJpaController daoProy = new ProyectoJpaController();
+    UbicacionJpaController daoUbicacion = new UbicacionJpaController();
+    
     Proyecto proy = new Proyecto();
     boolean agregando = false;
     boolean editando = false;
@@ -124,17 +116,32 @@ public class FrmProyecto extends javax.swing.JInternalFrame {
     }
     
     public void setearValores(){
+        //se coloca cero por el autoincrement de la base de datos
         proy.setIdProyecto(0);
         proy.setNombreProyecto(this.txtProyectoName.getText());
         proy.setFechaInicio(this.txtFechaInicio.getText());
         proy.setTiempoEstimado(this.txtTiempo.getText());
         proy.setPrecioTotal(Double.parseDouble(this.txtPrecio.getText()));
-        //proy.getIdUbicacion(ubi);
     }
 
     public void insertar() {
         try {
             setearValores();
+            //guardar ubicacion
+            daoUbicacion.create(Ubicacion.newLocation);
+            
+            //recuperacion del ultimo registro ingresado
+            Ubicacion locacion = new Ubicacion();
+            locacion = daoUbicacion.getLastUbication();
+            
+            //valida si no retorna vacio
+            if(locacion.getIdUbicacion() == 0)
+                throw new Exception();
+            
+            //setear valores de ubicacion
+            proy.setIdUbicacion(locacion);
+                        
+            //ingresar el registro a la base de datos a la tabla de proyectos
             daoProy.create(proy);
             message.printMessageAlerts("¡Los datos se han ingresado correctamente!", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
             limpiar();
@@ -337,6 +344,12 @@ public class FrmProyecto extends javax.swing.JInternalFrame {
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 btnMapaMouseExited(evt);
             }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                btnMapaMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                btnMapaMouseReleased(evt);
+            }
         });
         btnMapa.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -355,16 +368,6 @@ public class FrmProyecto extends javax.swing.JInternalFrame {
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(37, 37, 37)
-                        .addComponent(jLabel6)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtTiempo, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(37, 37, 37)
-                        .addComponent(jLabel7)
-                        .addGap(61, 61, 61)
-                        .addComponent(txtPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(37, 37, 37)
                         .addComponent(btnNuevo)
                         .addGap(31, 31, 31)
                         .addComponent(btnInsertar)
@@ -381,18 +384,31 @@ public class FrmProyecto extends javax.swing.JInternalFrame {
                         .addGap(37, 37, 37)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addGap(76, 76, 76)
-                                .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel5))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel6)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(txtTiempo, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel7)
+                                        .addGap(61, 61, 61)
+                                        .addComponent(txtPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(104, 104, 104))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addGap(112, 112, 112)
-                                .addComponent(txtProyectoName, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnMapa)))
-                        .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addComponent(jLabel2)
+                                        .addGap(76, 76, 76)
+                                        .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jLabel5))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addComponent(jLabel4)
+                                        .addGap(112, 112, 112)
+                                        .addComponent(txtProyectoName, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(btnMapa, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(txtFechaInicio, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
                             .addComponent(lblPrueba, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
@@ -446,7 +462,7 @@ public class FrmProyecto extends javax.swing.JInternalFrame {
                 .addGap(19, 19, 19)
                 .addComponent(jLabel3)
                 .addGap(11, 11, 11)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -516,30 +532,26 @@ public class FrmProyecto extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnNuevoMouseClicked
 
     private void btnMapaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMapaMouseClicked
-        
+        FrmGenerarMapa mapa = new FrmGenerarMapa();
+        mapa.setVisible(true);
     }//GEN-LAST:event_btnMapaMouseClicked
 
     private void btnMapaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMapaActionPerformed
-        generarMapa();
+        
     }//GEN-LAST:event_btnMapaActionPerformed
 
     private void btnMapaMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMapaMouseExited
         
     }//GEN-LAST:event_btnMapaMouseExited
-    
-    public void generarMapa(){
-        final CreacionMapa sample = new CreacionMapa();
-        sample.latitud = (13.794185);
-        sample.longitud = (-88.89653);
-        sample.nombre = ("Nombre de prueba");
+
+    private void btnMapaMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMapaMouseReleased
         
-        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        frame.add(sample, BorderLayout.CENTER);
-        frame.setSize(700, 500);
-        frame.setLocationRelativeTo(null);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setVisible(true);
-    }
+    }//GEN-LAST:event_btnMapaMouseReleased
+
+    private void btnMapaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMapaMousePressed
+        
+    }//GEN-LAST:event_btnMapaMousePressed
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable TablaProyecto;

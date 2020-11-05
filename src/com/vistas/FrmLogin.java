@@ -168,27 +168,24 @@ public class FrmLogin extends javax.swing.JFrame {
                 item = cmbRol.getModel().getElementAt(i);
             }
         }
-        ingresar(txtUsuario.getText(), txtPassword.getText(), item.getValue());
+        //realiza proceso de login
+        ingresar(txtUsuario.getText(), txtPassword.getText(), item.getValue(), item.toString());
     }//GEN-LAST:event_btnIngresarMouseClicked
 
     private void txtUsuarioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUsuarioKeyTyped
         validarCampos.wordsOnly(evt);
     }//GEN-LAST:event_txtUsuarioKeyTyped
 
-    public void ingresar(String user, String password, int cargo) {
+    public void ingresar(String user, String password, int idCargo, String cargo) {
         boolean login = false;
         try {
-            login = daoUser.getUserLogin(user, password, cargo);
+            login = daoUser.getUserLogin(user, password, idCargo);
             if (login) {
                 message.printMessageAlerts("¡Bienvenido!", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
-                /*FrmPrincipal principal = new FrmPrincipal();
+                FrmPrincipal principal = new FrmPrincipal();
+                principal.nivel = cargo;
                 
-                if(cargo == 1)
-                    principal.nivel = "Administrador";
-                else
-                    principal.nivel = "Invitado";
-                
-                principal.show();*/
+                principal.show();
                 this.dispose();
             } else {
                 message.printMessageAlerts("¡Error al iniciar sesion!", "Mensaje", JOptionPane.ERROR_MESSAGE);

@@ -1,6 +1,7 @@
 
 package com.entities;
 
+import com.interfaces.OperacionesUbicacion;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
@@ -33,7 +34,7 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Ubicacion.findByNombre", query = "SELECT u FROM Ubicacion u WHERE u.nombre = :nombre")
     , @NamedQuery(name = "Ubicacion.findByLatitud", query = "SELECT u FROM Ubicacion u WHERE u.latitud = :latitud")
     , @NamedQuery(name = "Ubicacion.findByLongitud", query = "SELECT u FROM Ubicacion u WHERE u.longitud = :longitud")})
-public class Ubicacion implements Serializable {
+public class Ubicacion implements Serializable, OperacionesUbicacion {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -125,13 +126,21 @@ public class Ubicacion implements Serializable {
     }
     
     public static Ubicacion newLocation = new Ubicacion();
-
-    public void recuperarDatosMapa(double newLatitud, double newLongitud, String newNombre) {
-        newLocation.setLatitud(newLatitud);
-        newLocation.setLongitud(newLongitud);
-        newLocation.setNombre(newNombre);
+    
+    @Override
+    public void setearDatosMapa(double newLatitud, double newLongitud, String newNombre) {
+        try {
+            newLocation.setLatitud(newLatitud);
+            newLocation.setLongitud(newLongitud);
+            newLocation.setNombre(newNombre);  
+        } catch (Exception e) {
+            String o = e.getMessage();
+            int io = 0;
+        }
+        
     }
 
+    @Override
     public Ubicacion getLocation() {
         return newLocation;
     }

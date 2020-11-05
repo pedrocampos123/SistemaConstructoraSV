@@ -9,6 +9,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import com.entities.Proyecto;
 import com.entities.Ubicacion;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -19,7 +20,7 @@ import javax.persistence.Persistence;
  * Nombre del controller: UbicacionJpaController
  * Fecha: 04/11/2020 
  * CopyRigth: Pedro Campos
- * Modificacion: 04/11/2020
+ * Modificacion: 05/11/2020
  * Version: 1.0
  * @author pedro
  */
@@ -191,4 +192,26 @@ public class UbicacionJpaController implements Serializable {
         }
     }
     
+    public Ubicacion getLastUbication(){
+        Ubicacion ubicacion = new Ubicacion();
+        List<Ubicacion> resultado;
+        try {
+            EntityManager em = getEntityManager();
+            Query query = em.createQuery("SELECT u FROM Ubicacion u");
+            resultado = query.getResultList();
+            
+            if(!resultado.isEmpty()){
+                for (Ubicacion item : resultado) {
+                    ubicacion.setIdUbicacion(Integer.parseInt(item.getIdUbicacion().toString()));
+                    ubicacion.setLatitud(item.getLatitud());
+                    ubicacion.setLongitud(item.getLongitud());
+                    ubicacion.setNombre(item.getNombre());
+                }
+                return ubicacion;
+            }else 
+                return new Ubicacion();
+        } catch (Exception e) {
+            return new Ubicacion();
+        }
+    }
 }

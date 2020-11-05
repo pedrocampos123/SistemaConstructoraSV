@@ -17,6 +17,6 @@ import com.entities.Ubicacion;
  * @author pedro
  */
 public interface OperacionesUbicacion {
-    public void recuperarDatosMapa(double newLatitud, double newLongitud, String newNombre);
+    public void setearDatosMapa(double newLatitud, double newLongitud, String newNombre);
     public Ubicacion getLocation();
 }

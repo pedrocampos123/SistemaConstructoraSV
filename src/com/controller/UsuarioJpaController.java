@@ -9,6 +9,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import com.entities.Rol;
 import com.entities.Usuario;
+import com.utilidades.EncriptarDesencriptar;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -171,16 +172,26 @@ public class UsuarioJpaController implements Serializable {
     
     public boolean getUserLogin(String userName, String password, int rol){
         boolean login = false;
+        EncriptarDesencriptar lock = new EncriptarDesencriptar();
         try {
             EntityManager em = getEntityManager();
-            Query query = em.createQuery("SELECT u FROM Usuario u WHERE u.nombreUsuario = :userName AND u.password = :password AND u.idRol.idRol = (SELECT r.idRol FROM Rol r where r.idRol = :rol)");
+            Query query = em.createQuery("SELECT u FROM Usuario u WHERE u.nombreUsuario = :userName AND u.idRol.idRol = (SELECT r.idRol FROM Rol r where r.idRol = :rol)");
             query.setParameter("userName", userName);
-            query.setParameter("password", password);
             query.setParameter("rol", rol);
             List<Usuario>resultado = query.getResultList();
             
-            login = !resultado.isEmpty();
-            
+            if(!resultado.isEmpty()){            
+                for (Usuario user : resultado) {
+                    String clave = lock.Desencriptar(user.getPassword());
+                    if(clave.equals(password))
+                        return true;
+                    else
+                        return false;
+                }
+                login = true;
+            }
+            else 
+                login = false;
         } catch (Exception e) {
             login = false;
         }

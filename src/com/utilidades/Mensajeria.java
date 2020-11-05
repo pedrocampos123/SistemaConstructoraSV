@@ -20,4 +20,8 @@ public class Mensajeria {
     public int printMessageConfirm(String textMessage, String title, int iconAlert){
         return JOptionPane.showConfirmDialog(null, textMessage, title, iconAlert);
     }
+    
+    public String printImputDialog(String texto){
+        return JOptionPane.showInputDialog(texto);
+    }
 }

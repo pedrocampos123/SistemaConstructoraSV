@@ -18,6 +18,7 @@ import com.teamdev.jxmaps.MapTypeControlOptions;
 import com.teamdev.jxmaps.Marker;
 import com.teamdev.jxmaps.MouseEvent;
 import com.teamdev.jxmaps.swing.MapView;
+import com.vistas.FrmProyecto;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,14 +40,16 @@ public class CreacionMapa extends MapView {
     String latitudLongitud;
     String nombreUbicacion;
     int validarMarcador = 0;
+    
+    Mensajeria message = new Mensajeria();
 
-    public CreacionMapa() {
+    public CreacionMapa() {                    
         setOnMapReadyHandler(new MapReadyHandler() {
             @Override
             public void onMapReady(MapStatus status) {
                 if (status == MapStatus.MAP_STATUS_OK) {
-                    final Map map = getMap();
-
+                    final Map map = getMap();    
+                    
                     MapOptions options = new MapOptions();
                     MapTypeControlOptions controlOptions = new MapTypeControlOptions();
                     controlOptions.setPosition(ControlPosition.TOP_RIGHT);
@@ -77,11 +80,11 @@ public class CreacionMapa extends MapView {
                             /*Validacion si ya existe un marcador*/
                             switch (validarMarcador) {
                                 case 1:
-                                    JOptionPane.showMessageDialog(null, "Ya existe un marcador.\nPor favor eliminar el marcador existente dando click sobre el.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                                    message.printMessageAlerts("¡Ya existe un marcador.\nPor favor eliminar el marcador existente dando click sobre el!", "Mensaje", JOptionPane.WARNING_MESSAGE);
                                     break;
                                 default:
                                     /*Permite capturar el nombre que se le dara a la ubicacion*/
-                                    nombreUbicacion = JOptionPane.showInputDialog("Ingrese el Nombre de la Ubicacion");
+                                    nombreUbicacion = message.printImputDialog("¡Ingrese el Nombre de la Ubicacion!");
                                     if (nombreUbicacion.equals("")) {
                                         marker.remove();
                                         validarMarcador = 0;
@@ -118,6 +121,6 @@ public class CreacionMapa extends MapView {
         //Setear Valores
         Ubicacion location = new Ubicacion();
         String[] langLong = latitudLongitud.replace("[", "").replace("]", "").split(",");
-        location.recuperarDatosMapa(Double.parseDouble(langLong[0]), Double.parseDouble(langLong[1]), nombreUbicacion);
+        location.setearDatosMapa(Double.parseDouble(langLong[0]), Double.parseDouble(langLong[1]), nombreUbicacion);
     }
 }
