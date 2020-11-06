@@ -7,6 +7,7 @@ import com.entities.Rol;
 import com.entities.Usuario;
 import com.utilidades.ComboItem;
 import com.utilidades.Mensajeria;
+import com.utilidades.ValidarAccesos;
 import com.utilidades.ValidarCampos;
 import java.util.ArrayList;
 import java.util.List;
@@ -181,6 +182,9 @@ public class FrmLogin extends javax.swing.JFrame {
         try {
             login = daoUser.getUserLogin(user, password, idCargo);
             if (login) {
+                ValidarAccesos acceso = new ValidarAccesos();
+                acceso.setearNivelAcceso(idCargo, cargo);
+                
                 message.printMessageAlerts("¡Bienvenido!", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
                 FrmPrincipal principal = new FrmPrincipal();
                 principal.nivel = cargo;

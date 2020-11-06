@@ -201,5 +201,17 @@ public class RolJpaController implements Serializable {
         }
         return roles;
     }
+
+    public List<Rol> getRolSelected(int rol) {
+        List<Rol> roles = null;
+        try {
+            EntityManager em = getEntityManager();
+            Query query = em.createQuery("SELECT r FROM Rol r WHERE r.idRol = :rol");
+            query.setParameter("rol", rol);
+            roles = query.getResultList();
+        } catch (Exception e) {
+        }
+        return roles;
+    }
     
 }
