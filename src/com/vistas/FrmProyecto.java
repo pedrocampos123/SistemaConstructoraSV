@@ -528,7 +528,7 @@ public class FrmProyecto extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnNuevoMouseClicked
 
     private void btnMapaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMapaMouseClicked
-        FrmGenerarMapa mapa = new FrmGenerarMapa();
+        FrmGenerarMapa mapa = new FrmGenerarMapa(false, 0, 0, "");
         mapa.setVisible(true);
     }//GEN-LAST:event_btnMapaMouseClicked
 

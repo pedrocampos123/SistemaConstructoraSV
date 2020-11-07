@@ -17,7 +17,11 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
- *
+ * Nombre de Formulario: FrmUbicacion
+ * Fecha: 07/11/2020 
+ * CopyRigth: Pedro Campos
+ * Modificacion: 07/11/2020
+ * Version: 1.0
  * @author pedro
  */
 public class FrmUbicacion extends javax.swing.JInternalFrame {
@@ -29,8 +33,10 @@ public class FrmUbicacion extends javax.swing.JInternalFrame {
     Ubicacion location = new Ubicacion();
     ValidarCampos validarCampos = new ValidarCampos();
     
+    String nombre;
     String latitud;
     String longitud;
+    boolean modificacion;
     
     public FrmUbicacion() {
         initComponents();
@@ -87,7 +93,6 @@ public class FrmUbicacion extends javax.swing.JInternalFrame {
     }
 
     public void deshabilitar() {
-        txtNombreUbicacion.setEnabled(false);
         this.btnInsertar.setEnabled(true);
         this.btnModificar.setEnabled(false);
         this.btnEliminar.setEnabled(false);
@@ -95,7 +100,6 @@ public class FrmUbicacion extends javax.swing.JInternalFrame {
     }
 
     public void habilitar() {
-        txtNombreUbicacion.setEnabled(true);
         this.btnInsertar.setEnabled(true);
         this.btnModificar.setEnabled(true);
         this.btnEliminar.setEnabled(true);
@@ -104,15 +108,19 @@ public class FrmUbicacion extends javax.swing.JInternalFrame {
 
     public void limpiarCampos() {
         this.txtCodigo.setText("");
-        this.txtNombreUbicacion.setText("");
+        latitud = "";
+        longitud = "";
+        nombre = "";
+        modificacion = false;
     }
 
     public void llenarTabla() {
         int fila = this.TablaUbicaciones.getSelectedRow();
         this.txtCodigo.setText(String.valueOf(this.TablaUbicaciones.getValueAt(fila, 0)));
-        this.txtNombreUbicacion.setText(String.valueOf(this.TablaUbicaciones.getValueAt(fila, 1)));
+        nombre = (String.valueOf(this.TablaUbicaciones.getValueAt(fila, 1)));
         latitud = (String.valueOf(this.TablaUbicaciones.getValueAt(fila, 2)));
-        longitud = (validarCampos.numberFormat(String.valueOf(this.TablaUbicaciones.getValueAt(fila, 3))));
+        longitud = (String.valueOf(this.TablaUbicaciones.getValueAt(fila, 3)));
+        modificacion = true;
     }
 
     public void setearValores() {
@@ -127,7 +135,7 @@ public class FrmUbicacion extends javax.swing.JInternalFrame {
         }
         
         location.setIdUbicacion(0);
-        location.setNombre(this.txtNombreUbicacion.getText());
+        location.setNombre(newLocation.getNombre());
         location.setLatitud(newLocation.getLatitud());
         location.setLongitud(newLocation.getLongitud());    
     }
@@ -235,8 +243,6 @@ public class FrmUbicacion extends javax.swing.JInternalFrame {
         btnInsertar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
         btnModificar = new javax.swing.JButton();
-        txtNombreUbicacion = new javax.swing.JTextField();
-        jLabel8 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         TablaUbicaciones = new javax.swing.JTable();
@@ -319,16 +325,6 @@ public class FrmUbicacion extends javax.swing.JInternalFrame {
             }
         });
 
-        txtNombreUbicacion.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        txtNombreUbicacion.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtNombreUbicacionKeyTyped(evt);
-            }
-        });
-
-        jLabel8.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        jLabel8.setText("Nombre:");
-
         jLabel4.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         jLabel4.setText("Seleccionar las coordenadas por medio del mapa");
 
@@ -352,40 +348,31 @@ public class FrmUbicacion extends javax.swing.JInternalFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(btnLimpiar))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel8)
-                                    .addComponent(jLabel2))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jLabel4))
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(txtNombreUbicacion, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(btnMapa, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                .addComponent(jLabel2)
+                                .addGap(23, 23, 23)
+                                .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnMapa, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(146, 146, 146)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(54, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel2)
-                        .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel4))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnMapa)
-                    .addComponent(jLabel8)
-                    .addComponent(txtNombreUbicacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jLabel4)
+                    .addComponent(btnMapa))
+                .addGap(15, 15, 15)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnNuevo)
                     .addComponent(btnInsertar)
@@ -443,12 +430,16 @@ public class FrmUbicacion extends javax.swing.JInternalFrame {
         llenarTabla();
     }//GEN-LAST:event_TablaUbicacionesMouseClicked
 
-    private void txtNombreUbicacionKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreUbicacionKeyTyped
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtNombreUbicacionKeyTyped
-
     private void btnModificarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnModificarMouseClicked
-        modificar();
+        if(modificacion){
+            if (latitud.equals("") && longitud.equals("") && nombre.equals("")) {
+                message.printMessageAlerts("¡Debe seleccionar un registro a modificar.!", "Mensaje", JOptionPane.ERROR_MESSAGE);
+            }else{
+                modificar(); 
+            }
+        }else{
+            message.printMessageAlerts("¡Debe seleccionar un registro a modificar.!", "Mensaje", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnModificarMouseClicked
 
     private void btnEliminarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEliminarMouseClicked
@@ -488,8 +479,10 @@ public class FrmUbicacion extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnMapaMouseExited
 
     private void btnMapaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMapaMouseClicked
-        FrmGenerarMapa mapa = new FrmGenerarMapa();
-        mapa.setVisible(true);
+        if(modificacion){
+            FrmGenerarMapa mapa = new FrmGenerarMapa(modificacion, Double.parseDouble(latitud), Double.parseDouble(longitud), nombre);
+            mapa.setVisible(true);
+        }
     }//GEN-LAST:event_btnMapaMouseClicked
 
 
@@ -504,10 +497,8 @@ public class FrmUbicacion extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField txtCodigo;
-    private javax.swing.JTextField txtNombreUbicacion;
     // End of variables declaration//GEN-END:variables
 }

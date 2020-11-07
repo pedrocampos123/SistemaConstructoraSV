@@ -16,18 +16,32 @@ import javax.swing.WindowConstants;
  */
 public class FrmGenerarMapa extends javax.swing.JInternalFrame {
 
+    public double latitud;
+    public double longitud;
+    public String nombre;
+    public boolean modificacion;
     
-    
-    public FrmGenerarMapa() {
+    public FrmGenerarMapa(boolean modify, double lang, double longi, String name) {
         initComponents();
+        latitud = lang;
+        longitud = longi;
+        nombre = name;
+        modificacion = modify;
         generarMapa();
     }
 
     public void generarMapa(){
         final CreacionMapa sample = new CreacionMapa();
-        sample.latitud = (13.794185);
-        sample.longitud = (-88.89653);
-        sample.nombre = ("");
+        if(modificacion){
+            sample.latitud = (latitud);
+            sample.longitud = (longitud);
+            sample.nombre = (nombre);
+            sample.modificacion = (modificacion);
+        }else{
+            sample.latitud = (13.794185);
+            sample.longitud = (-88.89653);
+            sample.nombre = ("");
+        }
         
         JFrame frame = new JFrame("Mapa");
     
