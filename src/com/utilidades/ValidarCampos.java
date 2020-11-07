@@ -2,14 +2,17 @@
 package com.utilidades;
 
 import java.awt.event.KeyEvent;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
 import javax.swing.JTextField;
 
 /**
  * Nombre de la clase: ValidarCampos
  * Fecha: 04/11/2020 
  * CopyRigth: Pedro Campos
- * Modificacion: 04/11/2020
- * Version: 1.0
+ * Modificacion: 06/11/2020
+ * Version: 1.1
  * @author pedro
  */
 public class ValidarCampos {
@@ -31,18 +34,26 @@ public class ValidarCampos {
     /**
      * Validar solo numeros
      */
-    public void numbersOnly(KeyEvent evt){
+    public void onlyNumbres(KeyEvent evt){
         if(!Character.isDigit(evt.getKeyChar()))
             evt.consume();
     }
     
     /**
      * Validar solo palabras
-     */
-    
-    public void wordsOnly(KeyEvent evt){
+     */    
+    public void onlyWords(KeyEvent evt){
         if(!Character.isLetter(evt.getKeyChar()))
             evt.consume();
+    }
+    
+    /**
+     * Validar solo palabras y espacios
+     */    
+    public void spaceAndWords(KeyEvent evt, JTextField textField){
+        if(!Character.isLetter(evt.getKeyChar()) && evt.getKeyChar() != ' '){
+            evt.consume();
+        }
     }
     
     /**
@@ -55,5 +66,19 @@ public class ValidarCampos {
         if(evt.getKeyChar() == '.' && textField.getText().contains(".")){
             evt.consume();
         }
+    }
+    
+    /**
+     * convertir a decimales
+     * @param valorEntrada
+     * @return 
+     */
+    public String numberFormat(String valorEntrada){
+        NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.US);
+        
+        String valor = "";
+        valor = nf.format(Double.parseDouble(valorEntrada));
+        
+        return valor;
     }
 }

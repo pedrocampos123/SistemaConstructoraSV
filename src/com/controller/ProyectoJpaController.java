@@ -347,4 +347,38 @@ public class ProyectoJpaController implements Serializable {
         return resultado;
     }
     
+    public Proyecto getProyectoUbicacion(int idUbicacion){
+        List<Proyecto> resultado = null;
+        Proyecto proyecto = new Proyecto();
+        Ubicacion ubi = new Ubicacion();
+        try {
+            EntityManager em = getEntityManager();
+            Query query = em.createQuery("SELECT p FROM Proyecto p where p.idUbicacion.idUbicacion = :idUbicacion");
+            query.setParameter("idUbicacion", idUbicacion);
+            
+            resultado = query.getResultList();
+            
+            if(!resultado.isEmpty()){
+                for (Proyecto obj : resultado) {
+                    proyecto.setIdProyecto(obj.getIdProyecto());
+                    proyecto.setNombreProyecto(obj.getNombreProyecto());
+                    proyecto.setFechaInicio(obj.getFechaInicio());
+                    proyecto.setTiempoEstimado(obj.getTiempoEstimado());
+                    proyecto.setPrecioTotal(obj.getPrecioTotal());
+                    
+                    ubi.setIdUbicacion(obj.getIdUbicacion().getIdUbicacion());
+                    ubi.setNombre(obj.getIdUbicacion().getNombre());
+                    ubi.setLatitud(obj.getIdUbicacion().getLatitud());
+                    ubi.setLongitud(obj.getIdUbicacion().getLongitud());
+                    
+                    proyecto.setIdUbicacion(ubi);
+                }
+            }
+            
+        } catch (Exception e) {
+            return new Proyecto();
+        }
+        return proyecto;
+    }
+    
 }

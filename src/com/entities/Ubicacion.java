@@ -134,8 +134,6 @@ public class Ubicacion implements Serializable, OperacionesUbicacion {
             newLocation.setLongitud(newLongitud);
             newLocation.setNombre(newNombre);  
         } catch (Exception e) {
-            String o = e.getMessage();
-            int io = 0;
         }
         
     }
@@ -143,6 +141,11 @@ public class Ubicacion implements Serializable, OperacionesUbicacion {
     @Override
     public Ubicacion getLocation() {
         return newLocation;
+    }
+
+    @Override
+    public void limpiarLocation() {
+        newLocation = new Ubicacion();
     }
     
 }

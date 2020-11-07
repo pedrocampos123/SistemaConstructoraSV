@@ -19,4 +19,5 @@ import com.entities.Ubicacion;
 public interface OperacionesUbicacion {
     public void setearDatosMapa(double newLatitud, double newLongitud, String newNombre);
     public Ubicacion getLocation();
+    public void limpiarLocation();
 }

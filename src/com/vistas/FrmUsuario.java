@@ -21,8 +21,8 @@ import javax.swing.table.DefaultTableModel;
  * Nombre del Formulario: FrmUsuario 
  * Fecha: 05/11/2020 
  * CopyRight: Pedro Campos
- * modificación:05/11/2020 
- * Version: 1.0
+ * modificación:07/11/2020 
+ * Version: 1.1
  * @author pedro
  */
 public class FrmUsuario extends javax.swing.JInternalFrame {
@@ -31,6 +31,9 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
     UsuarioJpaController daoUsuarios = new UsuarioJpaController();
     Usuario user = new Usuario();
     Mensajeria message = new Mensajeria();
+    EncriptarDesencriptar encode = new EncriptarDesencriptar();
+
+    String oldPassword = "";
 
     public FrmUsuario() {
         initComponents();
@@ -90,8 +93,13 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
         this.txtNombre.setText(String.valueOf(this.TablaDatos.getValueAt(fila, 1)));
         this.txtPassword.setText(String.valueOf(this.TablaDatos.getValueAt(fila, 2)));
 
+        try {
+            oldPassword = encode.Desencriptar(txtPassword.getText());
+        } catch (Exception e) {
+        }
+
         int rolSeleccionado = Integer.parseInt(String.valueOf(this.TablaDatos.getValueAt(fila, 3)));
-        
+
         for (Rol obj : daoRol.getRolSelected(rolSeleccionado)) {
             cmbRol.getModel().setSelectedItem(obj.getTipo());
         }
@@ -112,11 +120,20 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
     }
 
     public void setearValores() {
-        EncriptarDesencriptar encode = new EncriptarDesencriptar();
         Rol rol = new Rol();
         user.setIdUsuario(0);
         user.setNombreUsuario(txtNombre.getText());
-        user.setPassword(encode.Encriptar(txtPassword.getText()));
+        
+        
+        try {
+            String newPassword = encode.Desencriptar(txtPassword.getText());
+            if (newPassword.equals(oldPassword)) {
+                user.setPassword(encode.Encriptar(oldPassword));
+            } else {
+                user.setPassword(encode.Encriptar(txtPassword.getText()));
+            }
+        } catch (Exception e) {
+        }
 
         //recuperar datos cmbRol
         String rolSeleccionado = cmbRol.getSelectedItem().toString();
@@ -230,8 +247,8 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
 
         setClosable(true);
 
-        jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        jLabel1.setText("Usuarios");
+        jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel1.setText("Gestión de usuarios");
 
         jLabel2.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         jLabel2.setText("ID Usuario:");
@@ -317,43 +334,43 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel3))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(txtIdUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jLabel4))
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jLabel5)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(cmbRol, 0, 111, Short.MAX_VALUE)
-                                    .addComponent(txtPassword)))
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(btnNuevoRegistro)
+                                .addComponent(txtIdUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(btnGuardar)
+                                .addComponent(jLabel4))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(btnModificar)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnEliminar)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnCancelar))))
+                                .addComponent(jLabel5)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtPassword)
+                            .addComponent(cmbRol, 0, 140, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(203, 203, 203)
-                        .addComponent(jLabel1)))
+                        .addComponent(btnNuevoRegistro)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnGuardar)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnModificar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnEliminar)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnCancelar)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(153, 153, 153))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -435,8 +452,6 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnModificar;
-    private javax.swing.JButton btnNuevo;
-    private javax.swing.JButton btnNuevo1;
     private javax.swing.JButton btnNuevoRegistro;
     private javax.swing.JComboBox<ComboItem> cmbRol;
     private javax.swing.JLabel jLabel1;

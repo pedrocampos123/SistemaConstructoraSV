@@ -174,7 +174,7 @@ public class FrmLogin extends javax.swing.JFrame {
     }//GEN-LAST:event_btnIngresarMouseClicked
 
     private void txtUsuarioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUsuarioKeyTyped
-        validarCampos.wordsOnly(evt);
+        validarCampos.onlyWords(evt);
     }//GEN-LAST:event_txtUsuarioKeyTyped
 
     public void ingresar(String user, String password, int idCargo, String cargo) {

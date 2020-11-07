@@ -14,6 +14,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
     static public String nivel;
     private FrmProyecto formulario = null;
     private FrmUsuario usuario = null;
+    private FrmUbicacion ubicacion = null;
 
     /**
      * Creates new form FrmPrincipal
@@ -40,8 +41,9 @@ public class FrmPrincipal extends javax.swing.JFrame {
                     break;
                 case "Invitado":
                     //bloquea la accion de los item de menu
-                    proyectoItem.setEnabled(false);
+                    ubicacionItem.setEnabled(false);
                     usuarioItem.setEnabled(false);
+                    ubicacionItem.setEnabled(false);
                     break;
                 default:
                     break;
@@ -57,8 +59,9 @@ public class FrmPrincipal extends javax.swing.JFrame {
         dskPrincipal = new javax.swing.JDesktopPane();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
-        proyectoItem = new javax.swing.JMenuItem();
+        ubicacionItem = new javax.swing.JMenuItem();
         usuarioItem = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
         cutMenuItem = new javax.swing.JMenuItem();
         copyMenuItem = new javax.swing.JMenuItem();
@@ -81,13 +84,13 @@ public class FrmPrincipal extends javax.swing.JFrame {
         fileMenu.setMnemonic('f');
         fileMenu.setText("Ventanas");
 
-        proyectoItem.setText("Proyectos");
-        proyectoItem.addActionListener(new java.awt.event.ActionListener() {
+        ubicacionItem.setText("Proyectos");
+        ubicacionItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                proyectoItemActionPerformed(evt);
+                ubicacionItemActionPerformed(evt);
             }
         });
-        fileMenu.add(proyectoItem);
+        fileMenu.add(ubicacionItem);
 
         usuarioItem.setText("Usuarios");
         usuarioItem.addActionListener(new java.awt.event.ActionListener() {
@@ -96,6 +99,14 @@ public class FrmPrincipal extends javax.swing.JFrame {
             }
         });
         fileMenu.add(usuarioItem);
+
+        jMenuItem1.setText("Ubicaciones");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        fileMenu.add(jMenuItem1);
 
         menuBar.add(fileMenu);
 
@@ -136,13 +147,13 @@ public class FrmPrincipal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void proyectoItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_proyectoItemActionPerformed
+    private void ubicacionItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ubicacionItemActionPerformed
         if (formulario == null || formulario.isClosed()) {
             formulario = new FrmProyecto();
             this.dskPrincipal.add(formulario);
         }
         formulario.setVisible(true);
-    }//GEN-LAST:event_proyectoItemActionPerformed
+    }//GEN-LAST:event_ubicacionItemActionPerformed
 
     private void usuarioItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usuarioItemActionPerformed
         if (usuario == null || usuario.isClosed()) {
@@ -151,6 +162,14 @@ public class FrmPrincipal extends javax.swing.JFrame {
         }
         usuario.setVisible(true);
     }//GEN-LAST:event_usuarioItemActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        if(ubicacion == null || ubicacion.isClosed()){
+            ubicacion = new FrmUbicacion();
+            this.dskPrincipal.add(ubicacion);
+        }
+        ubicacion.setVisible(true);
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -203,9 +222,10 @@ public class FrmPrincipal extends javax.swing.JFrame {
     private javax.swing.JDesktopPane dskPrincipal;
     private javax.swing.JMenu editMenu;
     private javax.swing.JMenu fileMenu;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem pasteMenuItem;
-    private javax.swing.JMenuItem proyectoItem;
+    private javax.swing.JMenuItem ubicacionItem;
     private javax.swing.JMenuItem usuarioItem;
     // End of variables declaration//GEN-END:variables
 
