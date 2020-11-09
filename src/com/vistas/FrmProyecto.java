@@ -1,7 +1,6 @@
 package com.vistas;
 
 import java.util.List;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import com.controller.ProyectoJpaController;
@@ -9,13 +8,14 @@ import com.controller.UbicacionJpaController;
 import com.entities.Proyecto;
 import com.entities.Ubicacion;
 import com.utilidades.Mensajeria;
-import com.utilidades.ValidarAccesos;
 import com.utilidades.ValidarCampos;
 
 /**
- * Nombre de la clase: FrmProyecto Fecha: 01/11/2020 CopyRight: Pedro Campos
- * modificación:05/11/2020 Version: 1.1
- *
+ * Nombre de la clase: FrmProyecto 
+ * Fecha: 01/11/2020 CopyRight: 
+ * Pedro Campos
+ * modificación:05/11/2020 
+ * Version: 1.1
  * @author pedro
  */
 public class FrmProyecto extends javax.swing.JInternalFrame {
@@ -32,32 +32,6 @@ public class FrmProyecto extends javax.swing.JInternalFrame {
         initComponents();
         setResizable(false);
         mostrarDatos();
-        nivelAcceso();
-    }
-    
-    public void nivelAcceso() {
-        ValidarAccesos obj = new ValidarAccesos();
-
-        try {
-
-            switch (obj.getAcceso().getTipoNivel()) {
-                case "Administrador":
-                    //desbloquea la accion de los botones del formulario
-                    habilitar();
-                    break;
-                case "Empleado":
-                    //bloquea la accion de los botones del formulario
-                    deshabilitar();
-                    break;
-                case "Invitado":
-                    //bloquea la accion de los botones del formulario
-                    deshabilitar();
-                    break;
-                default:
-                    break;
-            }
-        } catch (Exception e) {
-        }
     }
 
     public void mostrarDatos() {
@@ -130,7 +104,7 @@ public class FrmProyecto extends javax.swing.JInternalFrame {
         proy.setNombreProyecto(this.txtProyectoName.getText());
         proy.setFechaInicio(this.txtFechaInicio.getText());
         proy.setTiempoEstimado(this.txtTiempo.getText());
-        String precio = this.txtPrecio.getText().replace("$", " ");
+        String precio = this.txtPrecio.getText().replace("$", "").replace(",", "");
         proy.setPrecioTotal(Double.parseDouble(precio));
     }
 

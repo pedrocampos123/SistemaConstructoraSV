@@ -23,8 +23,8 @@ import javax.persistence.Persistence;
  * Nombre del controller: ProyectoJpaController
  * Fecha: 04/11/2020 
  * CopyRigth: Pedro Campos
- * Modificacion: 04/11/2020
- * Version: 1.0
+ * Modificacion: 09/11/2020
+ * Version: 1.1
  * @author pedro
  */
 public class ProyectoJpaController implements Serializable {
@@ -379,6 +379,21 @@ public class ProyectoJpaController implements Serializable {
             return new Proyecto();
         }
         return proyecto;
+    }
+    
+    public List<Proyecto> getProyecto(int idProyecto){
+        List<Proyecto> resultado = null;
+        try {
+            EntityManager em = getEntityManager();
+            Query query = em.createQuery("SELECT p FROM Proyecto p where p.idProyecto = :idProyecto");
+            query.setParameter("idProyecto", idProyecto);
+            
+            resultado = query.getResultList();
+            
+        } catch (Exception e) {
+            
+        }
+        return resultado;
     }
     
 }

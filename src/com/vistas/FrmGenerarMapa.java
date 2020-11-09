@@ -11,7 +11,11 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 /**
- *
+ * Nombre del Formulario: FrmGenerarMapa
+ * Fecha: 0/11/2020 
+ * CopyRight: Pedro Campos
+ * modificación:05/11/2020 
+ * Version: 1.1
  * @author pedro
  */
 public class FrmGenerarMapa extends javax.swing.JInternalFrame {

@@ -1,12 +1,13 @@
 package com.vistas;
 
-import com.entities.Rol;
 import com.utilidades.ValidarAccesos;
 
 /**
- * Nombre de la clase: FrmPrincipal Fecha: 1/11/2020 CopyRigth: Pedro Campos
- * Modificacion: 06/11/2020 Version: 1.1
- *
+ * Nombre de la clase: FrmPrincipal 
+ * Fecha: 1/11/2020 
+ * CopyRigth: Pedro Campos
+ * Modificacion: 09/11/2020 
+ * Version: 1.2
  * @author pedro
  */
 public class FrmPrincipal extends javax.swing.JFrame {
@@ -15,10 +16,10 @@ public class FrmPrincipal extends javax.swing.JFrame {
     private FrmProyecto formulario = null;
     private FrmUsuario usuario = null;
     private FrmUbicacion ubicacion = null;
+    private FrmRoles roles = null;
+    private FrmEmpleado empleado = null;
+    private FrmPagoEmpleado pagoEmpleado = null;
 
-    /**
-     * Creates new form FrmPrincipal
-     */
     public FrmPrincipal() {
         initComponents();
         setResizable(true);
@@ -44,6 +45,9 @@ public class FrmPrincipal extends javax.swing.JFrame {
                     ubicacionItem.setEnabled(false);
                     usuarioItem.setEnabled(false);
                     ubicacionItem.setEnabled(false);
+                    rolesItem.setEnabled(false);
+                    empleadoItem.setEnabled(false);
+                    pagoEmpleadoItem.setEnabled(false);
                     break;
                 default:
                     break;
@@ -61,7 +65,10 @@ public class FrmPrincipal extends javax.swing.JFrame {
         fileMenu = new javax.swing.JMenu();
         ubicacionItem = new javax.swing.JMenuItem();
         usuarioItem = new javax.swing.JMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        ubicacionesItem = new javax.swing.JMenuItem();
+        rolesItem = new javax.swing.JMenuItem();
+        empleadoItem = new javax.swing.JMenuItem();
+        pagoEmpleadoItem = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
         cutMenuItem = new javax.swing.JMenuItem();
         copyMenuItem = new javax.swing.JMenuItem();
@@ -100,13 +107,37 @@ public class FrmPrincipal extends javax.swing.JFrame {
         });
         fileMenu.add(usuarioItem);
 
-        jMenuItem1.setText("Ubicaciones");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        ubicacionesItem.setText("Ubicaciones");
+        ubicacionesItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                ubicacionesItemActionPerformed(evt);
             }
         });
-        fileMenu.add(jMenuItem1);
+        fileMenu.add(ubicacionesItem);
+
+        rolesItem.setText("Roles");
+        rolesItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rolesItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(rolesItem);
+
+        empleadoItem.setText("Empleados");
+        empleadoItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                empleadoItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(empleadoItem);
+
+        pagoEmpleadoItem.setText("Pago Empleados");
+        pagoEmpleadoItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pagoEmpleadoItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(pagoEmpleadoItem);
 
         menuBar.add(fileMenu);
 
@@ -163,13 +194,37 @@ public class FrmPrincipal extends javax.swing.JFrame {
         usuario.setVisible(true);
     }//GEN-LAST:event_usuarioItemActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void ubicacionesItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ubicacionesItemActionPerformed
         if(ubicacion == null || ubicacion.isClosed()){
             ubicacion = new FrmUbicacion();
             this.dskPrincipal.add(ubicacion);
         }
         ubicacion.setVisible(true);
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_ubicacionesItemActionPerformed
+
+    private void rolesItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rolesItemActionPerformed
+        if(roles == null || roles.isClosed()){
+            roles = new FrmRoles();
+            this.dskPrincipal.add(roles);
+        }
+        roles.setVisible(true);
+    }//GEN-LAST:event_rolesItemActionPerformed
+
+    private void empleadoItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_empleadoItemActionPerformed
+        if(empleado == null || empleado.isClosed()){
+            empleado = new FrmEmpleado();
+            this.dskPrincipal.add(empleado);
+        }
+        empleado.setVisible(true);
+    }//GEN-LAST:event_empleadoItemActionPerformed
+
+    private void pagoEmpleadoItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pagoEmpleadoItemActionPerformed
+        if(pagoEmpleado == null || pagoEmpleado.isClosed()){
+            pagoEmpleado = new FrmPagoEmpleado();
+            this.dskPrincipal.add(pagoEmpleado);
+        }
+        pagoEmpleado.setVisible(true);
+    }//GEN-LAST:event_pagoEmpleadoItemActionPerformed
 
     /**
      * @param args the command line arguments
@@ -221,11 +276,14 @@ public class FrmPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem deleteMenuItem;
     private javax.swing.JDesktopPane dskPrincipal;
     private javax.swing.JMenu editMenu;
+    private javax.swing.JMenuItem empleadoItem;
     private javax.swing.JMenu fileMenu;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JMenuItem pagoEmpleadoItem;
     private javax.swing.JMenuItem pasteMenuItem;
+    private javax.swing.JMenuItem rolesItem;
     private javax.swing.JMenuItem ubicacionItem;
+    private javax.swing.JMenuItem ubicacionesItem;
     private javax.swing.JMenuItem usuarioItem;
     // End of variables declaration//GEN-END:variables
 

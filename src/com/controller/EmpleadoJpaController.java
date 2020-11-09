@@ -220,4 +220,19 @@ public class EmpleadoJpaController implements Serializable {
         }
     }
     
+    public List<Empleado> getEmpleado(int idEmpleado){
+        List<Empleado> resultado = null;
+        try {
+            EntityManager em = getEntityManager();
+            Query query = em.createQuery("SELECT p FROM Empleado p where p.idEmpleado = :idEmpleado");
+            query.setParameter("idEmpleado", idEmpleado);
+            
+            resultado = query.getResultList();
+            
+        } catch (Exception e) {
+            
+        }
+        return resultado;
+    }
+    
 }

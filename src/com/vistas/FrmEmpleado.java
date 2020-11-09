@@ -5,48 +5,46 @@
  */
 package com.vistas;
 
-import com.controller.RolJpaController;
-import com.controller.UsuarioJpaController;
-import com.entities.Rol;
-import com.entities.Usuario;
+import com.controller.EmpleadoJpaController;
+import com.controller.ProyectoJpaController;
+import com.entities.Empleado;
+import com.entities.Proyecto;
 import com.utilidades.ComboItem;
-import com.utilidades.EncriptarDesencriptar;
 import com.utilidades.Mensajeria;
+import com.utilidades.ValidarCampos;
 import java.util.List;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
- * Nombre del Formulario: FrmUsuario 
- * Fecha: 05/11/2020 
+ * Nombre del Formulario: FrmEmpleado
+ * Fecha: 09/11/2020 
  * CopyRight: Pedro Campos
- * modificación:07/11/2020 
- * Version: 1.1
+ * modificación:09/11/2020 
+ * Version: 1.0
  * @author pedro
  */
-public class FrmUsuario extends javax.swing.JInternalFrame {
+public class FrmEmpleado extends javax.swing.JInternalFrame {
 
-    RolJpaController daoRol = new RolJpaController();
-    UsuarioJpaController daoUsuarios = new UsuarioJpaController();
-    Usuario user = new Usuario();
+    ProyectoJpaController daoProyecto = new ProyectoJpaController();
+    EmpleadoJpaController daoEmpleado = new EmpleadoJpaController();
+    Proyecto proyecto = new Proyecto();
+    Empleado empleado = new Empleado();
     Mensajeria message = new Mensajeria();
-    EncriptarDesencriptar encode = new EncriptarDesencriptar();
-
-    String oldPassword = "";
-
-    public FrmUsuario() {
+    ValidarCampos validarCampos = new ValidarCampos();
+    
+    public FrmEmpleado() {
         initComponents();
-        setResizable(false);
-        cargarComboRol(cmbRol, (List<Rol>) daoRol.getAllRoles());
+        cargarComboRol(cmbProyecto, (List<Proyecto>) daoProyecto.findProyectoEntities());
         mostrarDatos();
         deshabilitar();
     }
 
     public void deshabilitar() {
         txtNombre.setEnabled(false);
-        txtPassword.setEnabled(false);
-        cmbRol.setEnabled(false);
+        txtSalario.setEnabled(false);
+        cmbProyecto.setEnabled(false);
         btnGuardar.setEnabled(false);
         btnModificar.setEnabled(false);
         btnEliminar.setEnabled(false);
@@ -55,8 +53,8 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
 
     public void habilitar() {
         txtNombre.setEnabled(true);
-        txtPassword.setEnabled(true);
-        cmbRol.setEnabled(true);
+        txtSalario.setEnabled(true);
+        cmbProyecto.setEnabled(true);
         btnGuardar.setEnabled(true);
         btnModificar.setEnabled(true);
         btnEliminar.setEnabled(true);
@@ -65,18 +63,18 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
 
     public void mostrarDatos() {
         DefaultTableModel tabla;
-        String encabezados[] = {"ID Usuario", "Usuario", "Password", "Rol"};
+        String encabezados[] = {"ID Empleado", "Nombre", "Salario", "Proyecto"};
         tabla = new DefaultTableModel(null, encabezados);
         Object datos[] = new Object[4];
         try {
             List lista;
-            lista = daoUsuarios.findUsuarioEntities();
+            lista = daoEmpleado.findEmpleadoEntities();
             for (int i = 0; i < lista.size(); i++) {
-                user = (Usuario) lista.get(i);
-                datos[0] = user.getIdUsuario();
-                datos[1] = user.getNombreUsuario();
-                datos[2] = user.getPassword();
-                datos[3] = user.getIdRol().getIdRol();
+                empleado = (Empleado) lista.get(i);
+                datos[0] = empleado.getIdEmpleado();
+                datos[1] = empleado.getNombreEmpleado();
+                datos[2] = empleado.getSalario();
+                datos[3] = empleado.getIdProyecto().getIdProyecto();
                 tabla.addRow(datos);
             }
             this.TablaDatos.setModel(tabla);
@@ -86,73 +84,57 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
     }
 
     public void llenarTabla() {
-        Usuario listUser;
         int fila = this.TablaDatos.getSelectedRow();
-        this.txtIdUsuario.setText(String.valueOf(this.TablaDatos.getValueAt(fila, 0)));
+        this.txtIdEmpleado.setText(String.valueOf(this.TablaDatos.getValueAt(fila, 0)));
         this.txtNombre.setText(String.valueOf(this.TablaDatos.getValueAt(fila, 1)));
-        this.txtPassword.setText(String.valueOf(this.TablaDatos.getValueAt(fila, 2)));
+        this.txtSalario.setText(validarCampos.numberFormat(String.valueOf(this.TablaDatos.getValueAt(fila, 2))));
+        
+        int Seleccionado = Integer.parseInt(String.valueOf(this.TablaDatos.getValueAt(fila, 3)));
 
-        try {
-            oldPassword = encode.Desencriptar(txtPassword.getText());
-        } catch (Exception e) {
-        }
-
-        int rolSeleccionado = Integer.parseInt(String.valueOf(this.TablaDatos.getValueAt(fila, 3)));
-
-        for (Rol obj : daoRol.getRolSelected(rolSeleccionado)) {
-            cmbRol.getModel().setSelectedItem(obj.getTipo());
+        for (Proyecto obj : daoProyecto.getProyecto(Seleccionado)) {
+            this.cmbProyecto.getModel().setSelectedItem(obj.getNombreProyecto());
         }
 
     }
 
-    private void cargarComboRol(JComboBox combo, List<Rol> list) {
-        for (Rol item : list) {
-            combo.addItem(new ComboItem(item.getIdRol(), item.getTipo()));
+    private void cargarComboRol(JComboBox combo, List<Proyecto> list) {
+        for (Proyecto item : list) {
+            combo.addItem(new ComboItem(item.getIdProyecto(), item.getNombreProyecto()));
         }
     }
 
     public void limpiarCampos() {
-        txtIdUsuario.setText("");
+        txtIdEmpleado.setText("");
         txtNombre.setText("");
-        txtPassword.setText("");
-        cmbRol.setSelectedIndex(0);
+        txtSalario.setText("");
+        cmbProyecto.setSelectedIndex(0);
     }
 
     public void setearValores() {
-        Rol rol = new Rol();
-        user.setIdUsuario(0);
-        user.setNombreUsuario(txtNombre.getText());
+        empleado.setIdEmpleado(0);
+        empleado.setNombreEmpleado(txtNombre.getText());
+        String precio = this.txtSalario.getText().replace("$", "").replace(",", "");
+        empleado.setSalario(Double.parseDouble(precio));
         
-        
-        try {
-            String newPassword = encode.Desencriptar(txtPassword.getText());
-            if (newPassword.equals(oldPassword)) {
-                user.setPassword(encode.Encriptar(oldPassword));
-            } else {
-                user.setPassword(encode.Encriptar(txtPassword.getText()));
-            }
-        } catch (Exception e) {
-        }
-
-        //recuperar datos cmbRol
-        String rolSeleccionado = cmbRol.getSelectedItem().toString();
+        //recuperar datos cmbProyecto
+        String Seleccionado = cmbProyecto.getSelectedItem().toString();
         ComboItem item = new ComboItem();
 
-        for (int i = 0; i < cmbRol.getItemCount(); i++) {
-            if (rolSeleccionado.equals(cmbRol.getItemAt(i).toString())) {
-                item = cmbRol.getModel().getElementAt(i);
+        for (int i = 0; i < cmbProyecto.getItemCount(); i++) {
+            if (Seleccionado.equals(cmbProyecto.getItemAt(i).toString())) {
+                item = cmbProyecto.getModel().getElementAt(i);
             }
         }
-
-        rol.setIdRol(item.getValue());
-        user.setIdRol(rol);
+        proyecto.setIdProyecto(item.getValue());
+        
+        empleado.setIdProyecto(proyecto);
     }
 
     public void insertar() {
         try {
             setearValores();
 
-            daoUsuarios.create(user);
+            daoEmpleado.create(empleado);
 
             mostrarDatos();
             limpiarCampos();
@@ -170,8 +152,8 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
             if (respuesta == JOptionPane.YES_OPTION) {
                 setearValores();
 
-                user.setIdUsuario(Integer.parseInt(txtIdUsuario.getText()));
-                daoUsuarios.edit(user);
+                empleado.setIdEmpleado(Integer.parseInt(txtIdEmpleado.getText()));
+                daoEmpleado.edit(empleado);
 
                 mostrarDatos();
                 limpiarCampos();
@@ -192,7 +174,7 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
             if (respuesta == JOptionPane.YES_OPTION) {
                 setearValores();
 
-                daoUsuarios.destroy(Integer.parseInt(txtIdUsuario.getText()));
+                daoEmpleado.destroy(Integer.parseInt(txtIdEmpleado.getText()));
 
                 mostrarDatos();
                 limpiarCampos();
@@ -205,24 +187,21 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
         } catch (Exception e) {
             message.printMessageAlerts("¡Error!", "Mensaje", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
+    }    
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        txtIdUsuario = new javax.swing.JTextField();
+        txtIdEmpleado = new javax.swing.JTextField();
         txtNombre = new javax.swing.JTextField();
-        txtPassword = new javax.swing.JPasswordField();
-        cmbRol = new javax.swing.JComboBox<>();
+        cmbProyecto = new javax.swing.JComboBox<>();
         jScrollPane2 = new javax.swing.JScrollPane();
         TablaDatos = new javax.swing.JTable();
         btnNuevoRegistro = new javax.swing.JButton();
@@ -230,45 +209,31 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
         btnModificar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane1.setViewportView(jTable1);
+        txtSalario = new javax.swing.JTextField();
 
         setClosable(true);
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
-        jLabel1.setText("Gestión de usuarios");
+        jLabel1.setText("Gestión de empleados");
 
         jLabel2.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        jLabel2.setText("ID Usuario:");
+        jLabel2.setText("ID Empleado:");
 
         jLabel3.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         jLabel3.setText("Nombre:");
 
         jLabel4.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        jLabel4.setText("Password:");
+        jLabel4.setText("Salario:");
 
         jLabel5.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        jLabel5.setText("Rol:");
+        jLabel5.setText("Proyecto:");
 
-        txtIdUsuario.setEditable(false);
-        txtIdUsuario.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtIdEmpleado.setEditable(false);
+        txtIdEmpleado.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
 
         txtNombre.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
 
-        txtPassword.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-
-        cmbRol.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        cmbProyecto.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
 
         TablaDatos.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         TablaDatos.setModel(new javax.swing.table.DefaultTableModel(
@@ -329,6 +294,8 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
             }
         });
 
+        txtSalario.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -344,7 +311,7 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(txtIdUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtIdEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(jLabel4))
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -353,8 +320,8 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
                                 .addComponent(jLabel5)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtPassword)
-                            .addComponent(cmbRol, 0, 140, Short.MAX_VALUE))
+                            .addComponent(cmbProyecto, 0, 140, Short.MAX_VALUE)
+                            .addComponent(txtSalario))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(btnNuevoRegistro)
@@ -379,14 +346,14 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
                 .addGap(15, 15, 15)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txtIdUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtIdEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
-                    .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtSalario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cmbRol, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbProyecto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -420,18 +387,14 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnNuevoRegistroMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNuevoRegistroMouseClicked
-        habilitar();
-        limpiarCampos();
-    }//GEN-LAST:event_btnNuevoRegistroMouseClicked
-
     private void TablaDatosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TablaDatosMouseClicked
         llenarTabla();
     }//GEN-LAST:event_TablaDatosMouseClicked
 
-    private void btnCancelarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelarMouseClicked
+    private void btnNuevoRegistroMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNuevoRegistroMouseClicked
+        habilitar();
         limpiarCampos();
-    }//GEN-LAST:event_btnCancelarMouseClicked
+    }//GEN-LAST:event_btnNuevoRegistroMouseClicked
 
     private void btnGuardarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGuardarMouseClicked
         insertar();
@@ -445,6 +408,10 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
         eliminar();
     }//GEN-LAST:event_btnEliminarMouseClicked
 
+    private void btnCancelarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelarMouseClicked
+        limpiarCampos();
+    }//GEN-LAST:event_btnCancelarMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable TablaDatos;
@@ -453,18 +420,16 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnModificar;
     private javax.swing.JButton btnNuevoRegistro;
-    private javax.swing.JComboBox<ComboItem> cmbRol;
+    private javax.swing.JComboBox<ComboItem> cmbProyecto;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField txtIdUsuario;
+    private javax.swing.JTextField txtIdEmpleado;
     private javax.swing.JTextField txtNombre;
-    private javax.swing.JPasswordField txtPassword;
+    private javax.swing.JTextField txtSalario;
     // End of variables declaration//GEN-END:variables
 }

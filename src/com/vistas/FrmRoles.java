@@ -6,47 +6,34 @@
 package com.vistas;
 
 import com.controller.RolJpaController;
-import com.controller.UsuarioJpaController;
 import com.entities.Rol;
-import com.entities.Usuario;
-import com.utilidades.ComboItem;
-import com.utilidades.EncriptarDesencriptar;
 import com.utilidades.Mensajeria;
 import java.util.List;
-import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
- * Nombre del Formulario: FrmUsuario 
- * Fecha: 05/11/2020 
+ * Nombre del Formulario: FrmRoles
+ * Fecha: 09/11/2020 
  * CopyRight: Pedro Campos
- * modificación:07/11/2020 
- * Version: 1.1
+ * modificación:09/11/2020 
+ * Version: 1.0
  * @author pedro
  */
-public class FrmUsuario extends javax.swing.JInternalFrame {
+public class FrmRoles extends javax.swing.JInternalFrame {
 
     RolJpaController daoRol = new RolJpaController();
-    UsuarioJpaController daoUsuarios = new UsuarioJpaController();
-    Usuario user = new Usuario();
+    Rol rol = new Rol();
     Mensajeria message = new Mensajeria();
-    EncriptarDesencriptar encode = new EncriptarDesencriptar();
-
-    String oldPassword = "";
-
-    public FrmUsuario() {
+    
+    public FrmRoles() {
         initComponents();
-        setResizable(false);
-        cargarComboRol(cmbRol, (List<Rol>) daoRol.getAllRoles());
         mostrarDatos();
         deshabilitar();
     }
 
     public void deshabilitar() {
         txtNombre.setEnabled(false);
-        txtPassword.setEnabled(false);
-        cmbRol.setEnabled(false);
         btnGuardar.setEnabled(false);
         btnModificar.setEnabled(false);
         btnEliminar.setEnabled(false);
@@ -55,8 +42,6 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
 
     public void habilitar() {
         txtNombre.setEnabled(true);
-        txtPassword.setEnabled(true);
-        cmbRol.setEnabled(true);
         btnGuardar.setEnabled(true);
         btnModificar.setEnabled(true);
         btnEliminar.setEnabled(true);
@@ -65,18 +50,16 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
 
     public void mostrarDatos() {
         DefaultTableModel tabla;
-        String encabezados[] = {"ID Usuario", "Usuario", "Password", "Rol"};
+        String encabezados[] = {"ID Rol", "Tipo"};
         tabla = new DefaultTableModel(null, encabezados);
-        Object datos[] = new Object[4];
+        Object datos[] = new Object[2];
         try {
             List lista;
-            lista = daoUsuarios.findUsuarioEntities();
+            lista = daoRol.findRolEntities();
             for (int i = 0; i < lista.size(); i++) {
-                user = (Usuario) lista.get(i);
-                datos[0] = user.getIdUsuario();
-                datos[1] = user.getNombreUsuario();
-                datos[2] = user.getPassword();
-                datos[3] = user.getIdRol().getIdRol();
+                rol = (Rol) lista.get(i);
+                datos[0] = rol.getIdRol();
+                datos[1] = rol.getTipo();
                 tabla.addRow(datos);
             }
             this.TablaDatos.setModel(tabla);
@@ -86,73 +69,27 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
     }
 
     public void llenarTabla() {
-        Usuario listUser;
+        Rol list;
         int fila = this.TablaDatos.getSelectedRow();
-        this.txtIdUsuario.setText(String.valueOf(this.TablaDatos.getValueAt(fila, 0)));
+        this.txtIdRol.setText(String.valueOf(this.TablaDatos.getValueAt(fila, 0)));
         this.txtNombre.setText(String.valueOf(this.TablaDatos.getValueAt(fila, 1)));
-        this.txtPassword.setText(String.valueOf(this.TablaDatos.getValueAt(fila, 2)));
-
-        try {
-            oldPassword = encode.Desencriptar(txtPassword.getText());
-        } catch (Exception e) {
-        }
-
-        int rolSeleccionado = Integer.parseInt(String.valueOf(this.TablaDatos.getValueAt(fila, 3)));
-
-        for (Rol obj : daoRol.getRolSelected(rolSeleccionado)) {
-            cmbRol.getModel().setSelectedItem(obj.getTipo());
-        }
-
-    }
-
-    private void cargarComboRol(JComboBox combo, List<Rol> list) {
-        for (Rol item : list) {
-            combo.addItem(new ComboItem(item.getIdRol(), item.getTipo()));
-        }
     }
 
     public void limpiarCampos() {
-        txtIdUsuario.setText("");
+        txtIdRol.setText("");
         txtNombre.setText("");
-        txtPassword.setText("");
-        cmbRol.setSelectedIndex(0);
     }
 
     public void setearValores() {
-        Rol rol = new Rol();
-        user.setIdUsuario(0);
-        user.setNombreUsuario(txtNombre.getText());
-        
-        
-        try {
-            String newPassword = encode.Desencriptar(txtPassword.getText());
-            if (newPassword.equals(oldPassword)) {
-                user.setPassword(encode.Encriptar(oldPassword));
-            } else {
-                user.setPassword(encode.Encriptar(txtPassword.getText()));
-            }
-        } catch (Exception e) {
-        }
-
-        //recuperar datos cmbRol
-        String rolSeleccionado = cmbRol.getSelectedItem().toString();
-        ComboItem item = new ComboItem();
-
-        for (int i = 0; i < cmbRol.getItemCount(); i++) {
-            if (rolSeleccionado.equals(cmbRol.getItemAt(i).toString())) {
-                item = cmbRol.getModel().getElementAt(i);
-            }
-        }
-
-        rol.setIdRol(item.getValue());
-        user.setIdRol(rol);
+        rol.setIdRol(0);
+        rol.setTipo(txtNombre.getText());
     }
 
     public void insertar() {
         try {
             setearValores();
 
-            daoUsuarios.create(user);
+            daoRol.create(rol);
 
             mostrarDatos();
             limpiarCampos();
@@ -170,8 +107,8 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
             if (respuesta == JOptionPane.YES_OPTION) {
                 setearValores();
 
-                user.setIdUsuario(Integer.parseInt(txtIdUsuario.getText()));
-                daoUsuarios.edit(user);
+                rol.setIdRol(Integer.parseInt(txtIdRol.getText()));
+                daoRol.edit(rol);
 
                 mostrarDatos();
                 limpiarCampos();
@@ -192,7 +129,7 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
             if (respuesta == JOptionPane.YES_OPTION) {
                 setearValores();
 
-                daoUsuarios.destroy(Integer.parseInt(txtIdUsuario.getText()));
+                daoRol.destroy(Integer.parseInt(txtIdRol.getText()));
 
                 mostrarDatos();
                 limpiarCampos();
@@ -206,23 +143,17 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
             message.printMessageAlerts("¡Error!", "Mensaje", JOptionPane.ERROR_MESSAGE);
         }
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        txtIdUsuario = new javax.swing.JTextField();
+        txtIdRol = new javax.swing.JTextField();
         txtNombre = new javax.swing.JTextField();
-        txtPassword = new javax.swing.JPasswordField();
-        cmbRol = new javax.swing.JComboBox<>();
         jScrollPane2 = new javax.swing.JScrollPane();
         TablaDatos = new javax.swing.JTable();
         btnNuevoRegistro = new javax.swing.JButton();
@@ -231,44 +162,21 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
         btnEliminar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane1.setViewportView(jTable1);
-
         setClosable(true);
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
-        jLabel1.setText("Gestión de usuarios");
+        jLabel1.setText("Gestión de roles");
 
         jLabel2.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        jLabel2.setText("ID Usuario:");
+        jLabel2.setText("ID Rol:");
 
         jLabel3.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         jLabel3.setText("Nombre:");
 
-        jLabel4.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        jLabel4.setText("Password:");
-
-        jLabel5.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        jLabel5.setText("Rol:");
-
-        txtIdUsuario.setEditable(false);
-        txtIdUsuario.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtIdRol.setEditable(false);
+        txtIdRol.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
 
         txtNombre.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-
-        txtPassword.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-
-        cmbRol.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
 
         TablaDatos.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         TablaDatos.setModel(new javax.swing.table.DefaultTableModel(
@@ -334,60 +242,46 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(txtIdUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel4))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel5)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtPassword)
-                            .addComponent(cmbRol, 0, 140, Short.MAX_VALUE))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(btnNuevoRegistro)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnGuardar)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnModificar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnEliminar)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnCancelar)))
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtIdRol, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel3)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(btnNuevoRegistro)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnGuardar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnModificar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnEliminar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnCancelar))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(172, 172, 172)
+                        .addComponent(jLabel1)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(153, 153, 153))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jLabel1)
                 .addGap(15, 15, 15)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(txtIdUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4)
-                    .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cmbRol, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel3)
+                        .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel2)
+                        .addComponent(txtIdRol, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnNuevoRegistro)
@@ -420,18 +314,14 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnNuevoRegistroMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNuevoRegistroMouseClicked
-        habilitar();
-        limpiarCampos();
-    }//GEN-LAST:event_btnNuevoRegistroMouseClicked
-
     private void TablaDatosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TablaDatosMouseClicked
         llenarTabla();
     }//GEN-LAST:event_TablaDatosMouseClicked
 
-    private void btnCancelarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelarMouseClicked
+    private void btnNuevoRegistroMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNuevoRegistroMouseClicked
+        habilitar();
         limpiarCampos();
-    }//GEN-LAST:event_btnCancelarMouseClicked
+    }//GEN-LAST:event_btnNuevoRegistroMouseClicked
 
     private void btnGuardarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGuardarMouseClicked
         insertar();
@@ -445,6 +335,10 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
         eliminar();
     }//GEN-LAST:event_btnEliminarMouseClicked
 
+    private void btnCancelarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelarMouseClicked
+        limpiarCampos();
+    }//GEN-LAST:event_btnCancelarMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable TablaDatos;
@@ -453,18 +347,12 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnModificar;
     private javax.swing.JButton btnNuevoRegistro;
-    private javax.swing.JComboBox<ComboItem> cmbRol;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField txtIdUsuario;
+    private javax.swing.JTextField txtIdRol;
     private javax.swing.JTextField txtNombre;
-    private javax.swing.JPasswordField txtPassword;
     // End of variables declaration//GEN-END:variables
 }
