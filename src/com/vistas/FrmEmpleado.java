@@ -94,7 +94,6 @@ public class FrmEmpleado extends javax.swing.JInternalFrame {
         for (Proyecto obj : daoProyecto.getProyecto(Seleccionado)) {
             this.cmbProyecto.getModel().setSelectedItem(obj.getNombreProyecto());
         }
-
     }
 
     private void cargarComboRol(JComboBox combo, List<Proyecto> list) {
