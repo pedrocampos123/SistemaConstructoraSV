@@ -19,6 +19,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
     private FrmRoles roles = null;
     private FrmEmpleado empleado = null;
     private FrmPagoEmpleado pagoEmpleado = null;
+    private FrmMaquinaria maquinaria = null;
 
     public FrmPrincipal() {
         initComponents();
@@ -69,6 +70,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
         rolesItem = new javax.swing.JMenuItem();
         empleadoItem = new javax.swing.JMenuItem();
         pagoEmpleadoItem = new javax.swing.JMenuItem();
+        maquinariaItem = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
         cutMenuItem = new javax.swing.JMenuItem();
         copyMenuItem = new javax.swing.JMenuItem();
@@ -138,6 +140,14 @@ public class FrmPrincipal extends javax.swing.JFrame {
             }
         });
         fileMenu.add(pagoEmpleadoItem);
+
+        maquinariaItem.setText("Maquinaria");
+        maquinariaItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                maquinariaItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(maquinariaItem);
 
         menuBar.add(fileMenu);
 
@@ -226,6 +236,14 @@ public class FrmPrincipal extends javax.swing.JFrame {
         pagoEmpleado.setVisible(true);
     }//GEN-LAST:event_pagoEmpleadoItemActionPerformed
 
+    private void maquinariaItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_maquinariaItemActionPerformed
+        if(maquinaria == null || maquinaria.isClosed()){
+            maquinaria = new FrmMaquinaria();
+            this.dskPrincipal.add(maquinaria);
+        }
+        maquinaria.setVisible(true);
+    }//GEN-LAST:event_maquinariaItemActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -278,6 +296,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenu editMenu;
     private javax.swing.JMenuItem empleadoItem;
     private javax.swing.JMenu fileMenu;
+    private javax.swing.JMenuItem maquinariaItem;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem pagoEmpleadoItem;
     private javax.swing.JMenuItem pasteMenuItem;

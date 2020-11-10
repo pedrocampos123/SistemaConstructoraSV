@@ -428,18 +428,22 @@ public class FrmMaquinaria extends javax.swing.JInternalFrame {
 
     private void btnGuardarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGuardarMouseClicked
 //        insertar();
+        deshabilitar();
     }//GEN-LAST:event_btnGuardarMouseClicked
 
     private void btnModificarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnModificarMouseClicked
 //        modificar();
+        deshabilitar();
     }//GEN-LAST:event_btnModificarMouseClicked
 
     private void btnEliminarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEliminarMouseClicked
 //        eliminar();
+        deshabilitar();
     }//GEN-LAST:event_btnEliminarMouseClicked
 
     private void btnCancelarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelarMouseClicked
         limpiarCampos();
+        deshabilitar();
     }//GEN-LAST:event_btnCancelarMouseClicked
 
 
