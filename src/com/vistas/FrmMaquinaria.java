@@ -15,6 +15,7 @@ import com.utilidades.ComboItem;
 import com.utilidades.Mensajeria;
 import com.utilidades.ValidarCampos;
 import java.util.List;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -22,7 +23,8 @@ import javax.swing.table.DefaultTableModel;
  * Nombre de la calse: FrmMaquinaria
  * Fecha: 09/11/2020
  * CopyRigth:ITCA-FEPADE
- * Versión:1.0
+ * modificación:10/11/2020 
+ * Versión:1.1
  * @author Jose Marroquin
  */
 public class FrmMaquinaria extends javax.swing.JInternalFrame {
@@ -30,7 +32,9 @@ public class FrmMaquinaria extends javax.swing.JInternalFrame {
     MaquinariaJpaController daoMaquinaria = new MaquinariaJpaController();
     ProyectoJpaController daoProyecto = new ProyectoJpaController();
     TipomaquinariaJpaController daoTipoMaquinaria= new TipomaquinariaJpaController();
+    Tipomaquinaria tipoMaquinaria = new Tipomaquinaria();
     Maquinaria maquinaria = new Maquinaria();
+    Proyecto proyecto = new Proyecto();
     Mensajeria message = new Mensajeria();
     ValidarCampos validarCampos = new ValidarCampos();
     
@@ -39,8 +43,8 @@ public class FrmMaquinaria extends javax.swing.JInternalFrame {
      */
     public FrmMaquinaria() {
         initComponents();
-//        cargarComboRol(cmbProyecto, (List<Proyecto>) daoProyecto.findProyectoEntities());
-//        cargarComboRol(cmbTipo, (List<Tipomaquinaria>) daoTipoMaquinaria.findTipomaquinariaEntities());
+        cargarComboProyecto(cmbProyecto, (List<Proyecto>) daoProyecto.findProyectoEntities());
+        cargarComboTipoMaquinaria(cmbTipo, (List<Tipomaquinaria>) daoTipoMaquinaria.findTipomaquinariaEntities());
         mostrarDatos();
         deshabilitar();
     }
@@ -79,7 +83,8 @@ public class FrmMaquinaria extends javax.swing.JInternalFrame {
     
     public void mostrarDatos() {
         DefaultTableModel tabla;
-        String encabezados[] = {"ID Maquinaria", "Nombre Maquinaria", "Peso", "Año de Adquisición", "Precio", "Largo", "Ancho", "Tipo", "Proyecto"};
+        String encabezados[] = {"ID Maquinaria", "Nombre Maquinaria", "Peso", "Año de Adquisición", 
+            "Precio", "Largo", "Ancho", "Tipo", "Proyecto"};
         tabla = new DefaultTableModel(null, encabezados);
         Object datos[] = new Object[9];
         try {
@@ -108,15 +113,131 @@ public class FrmMaquinaria extends javax.swing.JInternalFrame {
         int fila = this.TablaDatos.getSelectedRow();
         this.txtIdMaquinaria.setText(String.valueOf(this.TablaDatos.getValueAt(fila, 0)));
         this.txtNombreMaquinaria.setText(String.valueOf(this.TablaDatos.getValueAt(fila, 1)));
-        this.txtPeso.setText(validarCampos.numberFormat(String.valueOf(this.TablaDatos.getValueAt(fila, 2))));
-        this.txtAnioAdquisicion.setText(validarCampos.numberFormat(String.valueOf(this.TablaDatos.getValueAt(fila, 3))));
+        this.txtPeso.setText(String.valueOf(this.TablaDatos.getValueAt(fila, 2)));
+        this.txtAnioAdquisicion.setText(String.valueOf(this.TablaDatos.getValueAt(fila, 3)));
         this.txtPrecio.setText(validarCampos.numberFormat(String.valueOf(this.TablaDatos.getValueAt(fila, 4))));
-        this.txtLargo.setText(validarCampos.numberFormat(String.valueOf(this.TablaDatos.getValueAt(fila, 5))));
-        this.txtAncho.setText(validarCampos.numberFormat(String.valueOf(this.TablaDatos.getValueAt(fila, 6))));
+        this.txtLargo.setText(String.valueOf(this.TablaDatos.getValueAt(fila, 5)));
+        this.txtAncho.setText(String.valueOf(this.TablaDatos.getValueAt(fila, 6)));
         
-        ///////
-        //Falta comboBox
-        ///////
+        int tipoSeleccionado = Integer.parseInt(String.valueOf(this.TablaDatos.getValueAt(fila, 7)));
+
+        for (Tipomaquinaria obj : daoTipoMaquinaria.getTipoMaquinariaSeleccionada(tipoSeleccionado)) {
+            cmbTipo.getModel().setSelectedItem(obj.getNombre());
+        }
+        
+        int proyectoSeleccionado = Integer.parseInt(String.valueOf(this.TablaDatos.getValueAt(fila, 8)));
+
+        for (Proyecto obj : daoProyecto.getProyecto(proyectoSeleccionado)) {
+            cmbProyecto.getModel().setSelectedItem(obj.getNombreProyecto());
+        }
+    }
+
+    public void setearValores() {
+        maquinaria.setIdMaquinaria(0);
+        maquinaria.setNombreMaquina(txtNombreMaquinaria.getText());
+        maquinaria.setPeso(Double.parseDouble(txtPeso.getText()));
+        maquinaria.setAnioAdquisicion(txtAnioAdquisicion.getText());
+        String precio = txtPrecio.getText().replace("$", "").replace(",", "");
+        maquinaria.setPrecio(Double.parseDouble(precio));
+        maquinaria.setLargo(Double.parseDouble(txtLargo.getText()));
+        maquinaria.setAncho(Double.parseDouble(txtAncho.getText()));
+        
+        //recuperar datos cmbTipo
+        String tipoMaquinariaSeleccionado = cmbTipo.getSelectedItem().toString();
+        ComboItem itemTipo = new ComboItem();
+
+        for (int i = 0; i < cmbTipo.getItemCount(); i++) {
+            if (tipoMaquinariaSeleccionado.equals(cmbTipo.getItemAt(i).toString())) {
+                itemTipo = cmbTipo.getModel().getElementAt(i);
+            }
+        }
+        
+        tipoMaquinaria.setIdTipo(itemTipo.getValue());
+        maquinaria.setIdTipo(tipoMaquinaria);
+        
+        //recuperar datos cmbProyecto
+        String proyectoSeleccionado = cmbProyecto.getSelectedItem().toString();
+        ComboItem itemProyecto = new ComboItem();
+
+        for (int i = 0; i < cmbProyecto.getItemCount(); i++) {
+            if (proyectoSeleccionado.equals(cmbProyecto.getItemAt(i).toString())) {
+                itemProyecto = cmbProyecto.getModel().getElementAt(i);
+            }
+        }
+        
+        proyecto.setIdProyecto(itemProyecto.getValue());
+        maquinaria.setIdProyecto(proyecto);
+    }
+
+    private void cargarComboTipoMaquinaria(JComboBox combo, List<Tipomaquinaria> list) {
+        for (Tipomaquinaria item : list) {
+            combo.addItem(new ComboItem(item.getIdTipo(), item.getNombre()));
+        }
+    }
+
+    private void cargarComboProyecto(JComboBox combo, List<Proyecto> list) {
+        for (Proyecto item : list) {
+            combo.addItem(new ComboItem(item.getIdProyecto(), item.getNombreProyecto()));
+        }
+    }
+
+    public void insertar() {
+        try {
+            setearValores();
+
+            daoMaquinaria.create(maquinaria);
+
+            mostrarDatos();
+            limpiarCampos();
+
+            message.printMessageAlerts("¡Registro insertado correctamente!", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (Exception e) {
+            message.printMessageAlerts("¡Error!", "Mensaje", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void modificar() {
+        try {
+            int respuesta = message.printMessageConfirm("¿Desea modificar los datos?", "Mensaje", JOptionPane.YES_NO_OPTION);
+            if (respuesta == JOptionPane.YES_OPTION) {
+                setearValores();
+
+                maquinaria.setIdMaquinaria(Integer.parseInt(txtIdMaquinaria.getText()));
+                daoMaquinaria.edit(maquinaria);
+
+                mostrarDatos();
+                limpiarCampos();
+
+                message.printMessageAlerts("¡Registro modificado correctamente!", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                mostrarDatos();
+                limpiarCampos();
+            }
+        } catch (Exception e) {
+            message.printMessageAlerts("¡Error!", "Mensaje", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void eliminar() {
+        try {
+            int respuesta = message.printMessageConfirm("¿Desea eliminar los datos?", "Mensaje", JOptionPane.YES_NO_OPTION);
+            if (respuesta == JOptionPane.YES_OPTION) {
+                setearValores();
+
+                daoMaquinaria.destroy(Integer.parseInt(txtIdMaquinaria.getText()));
+
+                mostrarDatos();
+                limpiarCampos();
+
+                message.printMessageAlerts("¡Registro eliminados correctamente!", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                mostrarDatos();
+                limpiarCampos();
+            }
+        } catch (Exception e) {
+            message.printMessageAlerts("¡Error!", "Mensaje", JOptionPane.ERROR_MESSAGE);
+        }
     }
         
         public void limpiarCampos() {
@@ -427,18 +548,15 @@ public class FrmMaquinaria extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnNuevoRegistroMouseClicked
 
     private void btnGuardarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGuardarMouseClicked
-//        insertar();
-        deshabilitar();
+        insertar();
     }//GEN-LAST:event_btnGuardarMouseClicked
 
     private void btnModificarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnModificarMouseClicked
-//        modificar();
-        deshabilitar();
+        modificar();
     }//GEN-LAST:event_btnModificarMouseClicked
 
     private void btnEliminarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEliminarMouseClicked
-//        eliminar();
-        deshabilitar();
+        eliminar();
     }//GEN-LAST:event_btnEliminarMouseClicked
 
     private void btnCancelarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelarMouseClicked

@@ -191,4 +191,16 @@ public class TipomaquinariaJpaController implements Serializable {
         }
     }
     
+    public List<Tipomaquinaria> getTipoMaquinariaSeleccionada(int tipo) {
+        List<Tipomaquinaria> tipos = null;
+        try {
+            EntityManager em = getEntityManager();
+            Query query = em.createQuery("SELECT t FROM Tipomaquinaria t WHERE t.idTipo = :tipo");
+            query.setParameter("tipo", tipo);
+            tipos = query.getResultList();
+        } catch (Exception e) {
+        }
+        return tipos;
+    }
+    
 }

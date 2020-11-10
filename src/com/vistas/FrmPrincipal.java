@@ -49,6 +49,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
                     rolesItem.setEnabled(false);
                     empleadoItem.setEnabled(false);
                     pagoEmpleadoItem.setEnabled(false);
+                    maquinariaItem.setEnabled(false);
                     break;
                 default:
                     break;
