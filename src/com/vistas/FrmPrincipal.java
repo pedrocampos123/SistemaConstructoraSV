@@ -20,6 +20,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
     private FrmEmpleado empleado = null;
     private FrmPagoEmpleado pagoEmpleado = null;
     private FrmMaquinaria maquinaria = null;
+    private FrmTipo tipoMaquinaria= null;
 
     public FrmPrincipal() {
         initComponents();
@@ -50,6 +51,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
                     empleadoItem.setEnabled(false);
                     pagoEmpleadoItem.setEnabled(false);
                     maquinariaItem.setEnabled(false);
+                    tipoMaquinaria.setEnabled(false);
                     break;
                 default:
                     break;
@@ -72,6 +74,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
         empleadoItem = new javax.swing.JMenuItem();
         pagoEmpleadoItem = new javax.swing.JMenuItem();
         maquinariaItem = new javax.swing.JMenuItem();
+        tipoMaquinariaITEM = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
         cutMenuItem = new javax.swing.JMenuItem();
         copyMenuItem = new javax.swing.JMenuItem();
@@ -149,6 +152,14 @@ public class FrmPrincipal extends javax.swing.JFrame {
             }
         });
         fileMenu.add(maquinariaItem);
+
+        tipoMaquinariaITEM.setText("Tipo de maquinaria");
+        tipoMaquinariaITEM.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tipoMaquinariaITEMActionPerformed(evt);
+            }
+        });
+        fileMenu.add(tipoMaquinariaITEM);
 
         menuBar.add(fileMenu);
 
@@ -245,6 +256,15 @@ public class FrmPrincipal extends javax.swing.JFrame {
         maquinaria.setVisible(true);
     }//GEN-LAST:event_maquinariaItemActionPerformed
 
+    private void tipoMaquinariaITEMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tipoMaquinariaITEMActionPerformed
+        if(tipoMaquinaria== null||tipoMaquinaria.isClosed()){
+            tipoMaquinaria = new FrmTipo();
+            
+            this.dskPrincipal.add(tipoMaquinaria);
+        }
+        tipoMaquinaria.setVisible(true);
+    }//GEN-LAST:event_tipoMaquinariaITEMActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -302,6 +322,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem pagoEmpleadoItem;
     private javax.swing.JMenuItem pasteMenuItem;
     private javax.swing.JMenuItem rolesItem;
+    private javax.swing.JMenuItem tipoMaquinariaITEM;
     private javax.swing.JMenuItem ubicacionItem;
     private javax.swing.JMenuItem ubicacionesItem;
     private javax.swing.JMenuItem usuarioItem;

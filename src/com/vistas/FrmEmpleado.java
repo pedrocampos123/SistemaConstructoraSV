@@ -1,4 +1,4 @@
-/*
+ /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -89,6 +89,7 @@ public class FrmEmpleado extends javax.swing.JInternalFrame {
         this.txtNombre.setText(String.valueOf(this.TablaDatos.getValueAt(fila, 1)));
         this.txtSalario.setText(validarCampos.numberFormat(String.valueOf(this.TablaDatos.getValueAt(fila, 2))));
         
+        //Selecciona en ComboBox
         int Seleccionado = Integer.parseInt(String.valueOf(this.TablaDatos.getValueAt(fila, 3)));
 
         for (Proyecto obj : daoProyecto.getProyecto(Seleccionado)) {
@@ -124,6 +125,7 @@ public class FrmEmpleado extends javax.swing.JInternalFrame {
                 item = cmbProyecto.getModel().getElementAt(i);
             }
         }
+        //Seguimos obteniendo del cmbProyecto
         proyecto.setIdProyecto(item.getValue());
         
         empleado.setIdProyecto(proyecto);
