@@ -9,20 +9,20 @@ import com.utilidades.Mensajeria;
 import javax.swing.JOptionPane;
 
 /**
- *Nombre de la clase: FrmTipo
- * Fecha de creación: 10/11/2020
- * copyright: Free
- * última modificicación: 10/11/2020
+ *Nombre de la clase: FrmTipoMaquinaria
+ Fecha de creación: 10/11/2020
+ CopyRight: Luis
+ última modificicación: 10/11/2020
  * @author luis
  */
-public class FrmTipo extends javax.swing.JInternalFrame {
+public class FrmTipoMaquinaria extends javax.swing.JInternalFrame {
 
    
     TipomaquinariaJpaController daoTipo = new TipomaquinariaJpaController();
     Tipomaquinaria tipo = new Tipomaquinaria();
     Mensajeria message = new Mensajeria();
     
-    public FrmTipo() {
+    public FrmTipoMaquinaria() {
         initComponents();
         mostrarDatos();
         deshabilitar();
@@ -149,6 +149,8 @@ public class FrmTipo extends javax.swing.JInternalFrame {
         btnCancelar = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         TablaDatos = new javax.swing.JTable();
+
+        setClosable(true);
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         jLabel1.setText("Gestión de Tipo de maquinaria");

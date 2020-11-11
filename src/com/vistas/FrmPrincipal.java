@@ -20,7 +20,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
     private FrmEmpleado empleado = null;
     private FrmPagoEmpleado pagoEmpleado = null;
     private FrmMaquinaria maquinaria = null;
-    private FrmTipo tipoMaquinaria= null;
+    private FrmTipoMaquinaria tipoMaquinaria= null;
 
     public FrmPrincipal() {
         initComponents();
@@ -153,7 +153,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
         });
         fileMenu.add(maquinariaItem);
 
-        tipoMaquinariaITEM.setText("Tipo de maquinaria");
+        tipoMaquinariaITEM.setText("Tipo Maquinaria");
         tipoMaquinariaITEM.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tipoMaquinariaITEMActionPerformed(evt);
@@ -258,7 +258,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
     private void tipoMaquinariaITEMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tipoMaquinariaITEMActionPerformed
         if(tipoMaquinaria== null||tipoMaquinaria.isClosed()){
-            tipoMaquinaria = new FrmTipo();
+            tipoMaquinaria = new FrmTipoMaquinaria();
             
             this.dskPrincipal.add(tipoMaquinaria);
         }
